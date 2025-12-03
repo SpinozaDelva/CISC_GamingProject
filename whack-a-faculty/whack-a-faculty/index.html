@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whack-a-Faculty</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Custom Hammer Cursor -->
+  <img id="hammer" src="assets/HammerReady.png" alt="" style="display: none;">
+
+  <div id="game-container">
+    <h1>Whack-a-Faculty</h1>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-item">
+        <strong>Time Left:</strong>
+        <span id="timerValue">60</span>s
+      </div>
+      <div class="hud-item">
+        <strong>Score:</strong>
+        <span id="scoreValue">0</span>
+      </div>
+    </div>
+
+    <!-- Game Board -->
+    <div id="game-board">
+      <!-- 9 holes will be created by JavaScript -->
+    </div>
+
+    <!-- Buttons -->
+    <div id="buttons">
+      <button id="startButton">Start Game</button>
+      <button id="playAgainButton" style="display: none;">Play Again</button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over" style="display: none;">
+      <h2>Game Over!</h2>
+      <p>Final Score: <span id="finalScore">0</span></p>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

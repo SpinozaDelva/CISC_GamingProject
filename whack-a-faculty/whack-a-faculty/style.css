@@ -1,0 +1,248 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #228B22;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-container {
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: white;
+  text-shadow: 3px 3px 0px #006400;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+/* HUD - Timer and Score */
+#hud {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 15px;
+}
+
+.hud-item {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}
+
+#timerValue, #scoreValue {
+  font-weight: bold;
+  color: #228B22;
+  font-size: 1.3rem;
+}
+
+/* Game Board - 800x600 with 3x3 Grid */
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 220px);
+  grid-template-rows: repeat(3, 180px);
+  gap: 15px;
+  width: 800px;
+  height: 600px;
+  background-image: url('assets/Background.png');
+  background-size: cover;
+  background-position: center;
+  padding: 30px 60px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  margin: 0 auto;
+  cursor: none;
+}
+
+/* Custom Hammer Cursor */
+#hammer {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-40%, -40%);
+  transition: transform 0.05s ease-out;
+}
+
+#hammer.hit {
+  transform: translate(-40%, -40%) rotate(-45deg);
+}
+
+/* Individual Hole - LARGER */
+.hole {
+  position: relative;
+  width: 220px;
+  height: 180px;
+  overflow: hidden;
+}
+
+/* The hole image layer */
+.hole::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 70px;
+  background-image: url('assets/Hole.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Faculty that pops up - LARGER */
+.faculty {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 160px;
+  height: 160px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  transition: transform 0.25s ease-out;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.faculty.show {
+  transform: translateX(-50%) translateY(10%);
+}
+
+.faculty.bonked {
+  transform: translateX(-50%) translateY(10%);
+}
+
+/* BLOOD SPLATTER EFFECT */
+.blood {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, 
+    rgba(139, 0, 0, 0.9) 0%, 
+    rgba(180, 0, 0, 0.7) 20%,
+    rgba(200, 0, 0, 0.5) 40%,
+    rgba(255, 0, 0, 0.3) 60%,
+    transparent 80%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 30;
+  animation: bloodSplat 0.8s ease-out forwards;
+}
+
+@keyframes bloodSplat {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Blood drops */
+.blood-drop {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background-color: #8B0000;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  pointer-events: none;
+  z-index: 31;
+  animation: dropFall 0.6s ease-in forwards;
+}
+
+@keyframes dropFall {
+  0% {
+    opacity: 1;
+    transform: rotate(-45deg) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(-45deg) translateY(80px);
+  }
+}
+
+/* Buttons */
+#buttons {
+  margin-top: 15px;
+}
+
+button {
+  background-color: #FF6347;
+  color: white;
+  border: none;
+  padding: 12px 35px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #CC4F39;
+  transition: all 0.1s;
+  margin: 0 10px;
+}
+
+button:hover {
+  background-color: #FF7F6A;
+}
+
+button:active {
+  box-shadow: 0 2px 0 #CC4F39;
+  transform: translateY(3px);
+}
+
+/* Game Over Screen */
+#game-over {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 40px 60px;
+  border-radius: 20px;
+  text-align: center;
+  z-index: 100;
+}
+
+#game-over h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #FF6347;
+}
+
+#game-over p {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+#finalScore {
+  color: #7CFC00;
+  font-size: 2rem;
+}
