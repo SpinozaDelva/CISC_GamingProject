@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const HAMMER_READY = "assets/HammerReady.png";
   const HAMMER_HIT = "assets/HammerHit.png";
 
+  // ===== CREATE MUSIC AND SOUND EFFECTS OBJECTS =====
+  const music = new Audio('assets/sound/bg_music.mp3');
+  const sfxHammerSwing = new Audio('assets/sound/hammer_swing.mp3');
+  const sfxPop = new Audio('assets/sound/pop.mp3');
+
   // Move hammer with mouse over game board
   gameBoard.addEventListener("mousemove", (e) => {
     hammer.style.display = "block";
@@ -71,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== GAME STATE =====
   let timeLeft = GAME_DURATION;
   let score = 0;
+  let totalFaculty = 0; 
   let timerId = null;
   let spawnerId = null;
   let isGameRunning = false;
@@ -162,6 +168,10 @@ document.addEventListener("DOMContentLoaded", () => {
     holeData.isBonked = false;
     activeHoles.add(holeIndex);
 
+    // Count this appearance
+    totalFaculty++;                                     
+    scoreEl.textContent = `${score}/${totalFaculty}`;  
+
     // Show faculty (pop up)
     holeData.faculty.classList.add("show");
 
@@ -197,6 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleWhack(event) {
     if (!isGameRunning) return;
 
+    // Play sound effect: hammer swing
+    playSoundHammerSwing();
+
     const facultyEl = event.target;
     if (!facultyEl.classList.contains("faculty")) return;
     
@@ -206,9 +219,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if faculty is showing and not already bonked
     if (!holeData.isActive || holeData.isBonked) return;
 
-    // HIT! Increment score
+    // HIT! Increment score  
     score++;
-    scoreEl.textContent = score;
+    scoreEl.textContent = `${score}/${totalFaculty}`;
 
     // Show bonked state
     holeData.isBonked = true;
@@ -217,6 +230,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create blood splatter effect!
     createBloodSplatter(holeData.hole);
+
+    // Play sound effect: pop!
+    playSoundPop();
 
     // Hide after bonked animation
     setTimeout(() => {
@@ -244,12 +260,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reset state
     timeLeft = GAME_DURATION;
     score = 0;
+    totalFaculty = 0; 
+
     isGameRunning = true;
     activeHoles.clear();
 
     // Update display
     timerEl.textContent = timeLeft;
-    scoreEl.textContent = score;
+
+    //0/0 at start
+    scoreEl.textContent = `${score}/${totalFaculty}`;
 
     // Hide/show buttons
     startBtn.style.display = "none";
@@ -264,6 +284,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Start timer and spawning
     startTimer();
+
+    // Start playing music
+    playMusic();
     
     // Start spawning faculty after short delay
     setTimeout(() => {
@@ -281,9 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
     spawnerId = null;
 
     // Show game over screen
-    finalScoreEl.textContent = score;
+    finalScoreEl.textContent = `${score}/${totalFaculty}`;
     gameOverScreen.style.display = "block";
     playAgainBtn.style.display = "inline-block";
+
+    // Stop playing music
+    stopMusic();
 
     // Remove click listener
     gameBoard.removeEventListener("click", handleWhack);
@@ -301,6 +327,34 @@ document.addEventListener("DOMContentLoaded", () => {
     gameOverScreen.style.display = "none";
 
     gameBoard.innerHTML = "";
+  }
+
+  // ===== MUSIC AND SOUND EFFECTS =====
+  function playMusic() {
+    // Loop
+    music.loop = true;
+    
+    // Set volume lower so that other sound effects can be heard better
+    music.volume = 0.2;   
+    
+    // Play music
+    music.play();         
+  }
+
+  function stopMusic() {
+    // Stop music
+    music.pause();
+
+    // Reset to beginning for next time
+    music.currentTime = 0;
+  }
+
+  function playSoundHammerSwing() {
+    sfxHammerSwing.play();
+  }
+
+  function playSoundPop() {
+    sfxPop.play();
   }
 
   // ===== EVENT LISTENERS =====
